@@ -206,6 +206,8 @@ instantiate (const LV2_Descriptor*     descriptor,
 	LV2_Log_Logger logger;
 	lv2_log_logger_init (&logger, map, log);
 
+	lv2_log_error (&logger, "gugus: instanciate\n");
+
 	if (!map) {
 		lv2_log_error (&logger, "ZConvolv: Missing feature uri:map\n");
 		return NULL;
@@ -413,6 +415,9 @@ activate (LV2_Handle instance)
 	if (self->clv_online) {
 		self->clv_online->reset ();
 	}
+    // FIXME here we could load the default file
+
+	lv2_log_error (&self->logger, "gugus: instanciate\n %s", self->clv_online );
 }
 
 static inline void
@@ -471,6 +476,7 @@ run (LV2_Handle instance, uint32_t n_samples)
 		assert (self->chn_in == 1);
 		assert (self->chn_out == 1);
 		if (buffered) {
+	//    lv2_log_error (&self->logger, "gugus: run mono buffered%d %d \n", self->chn_in, self->chn_out);
 			self->clv_online->run_buffered_mono (self->output[0], n_samples);
 		} else {
 			self->clv_online->run_mono (self->output[0], n_samples);
@@ -539,6 +545,7 @@ work_response (LV2_Handle  instance,
 	}
 
 	/* swap engine instances */
+	lv2_log_warning (&self->logger, "ZConvolv swap: \n" );
 	ZeroConvoLV2::Convolver* old = self->clv_online;
 
 	self->clv_online  = self->clv_offline;
@@ -582,9 +589,7 @@ load_ir_worker_locked (zeroConvolv*                        self,
 		return LV2_WORKER_SUCCESS;
 	}
 
-#ifndef NDEBUG // do not log with lock held
 	lv2_log_note (&self->logger, "ZConvolv: loading '%s'\n", ir_path.c_str ());
-#endif
 
 	try {
 		self->clv_offline = new ZeroConvoLV2::Convolver (ir_path, self->rate, self->rt_policy, self->rt_priority, self->chn_cfg, irs);
@@ -613,6 +618,7 @@ load_ir_worker_locked (zeroConvolv*                        self,
 		lv2_log_warning (&self->logger, "ZConvolv Load: configuration failed for ir '%s'.\n", ir_path.c_str ());
 		return LV2_WORKER_ERR_UNKNOWN;
 	}
+	lv2_log_warning (&self->logger, "ZConvolv worker success: \n" );
 	return LV2_WORKER_SUCCESS;
 }
 
@@ -848,6 +854,7 @@ restore (LV2_Handle                  instance,
 		}
 	}
 
+    // could be that here the ir file is read
 	value = retrieve (handle, self->zc_ir, &size, &type, &valflags);
 	if (!value) {
 		return LV2_STATE_ERR_NO_PROPERTY;
@@ -860,10 +867,12 @@ restore (LV2_Handle                  instance,
 	bool             ok = false;
 
 	if (pthread_mutex_trylock (&self->state_lock)) {
+	    lv2_log_trace (&self->logger, "ZConvolv Queue: ir=%s\n", path);
 		/* The worker is busy, just queue file. This will be processed
 		 * when the worker triggers a work response. */
 		set_queue (self, path, irs);
 	} else if (thread_safe) {
+	    lv2_log_trace (&self->logger, "ZConvolv ThreadSfe ir=%s\n", path);
 		pthread_mutex_unlock (&self->state_lock);
 		size_t const irssize = sizeof (ZeroConvoLV2::Convolver::IRSettings);
 		/* schedule for loading in the background */
@@ -876,6 +885,7 @@ restore (LV2_Handle                  instance,
 		schedule->schedule_work (schedule->handle, lv2_atom_total_size (mem), mem);
 		free (mem);
 	} else {
+	    lv2_log_trace (&self->logger, "ZConvolv load ir=%s\n", path);
 		/* load it immediately, blocking wait */
 		self->in_restore = true;
 		switch (load_ir_worker_locked (self, NULL, NULL, path, irs, ok)) {

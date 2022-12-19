@@ -14,6 +14,7 @@
 @prefix units: <http://lv2plug.in/ns/extensions/units#>.
 @prefix urid:  <http://lv2plug.in/ns/ext/urid#>.
 @prefix work:  <http://lv2plug.in/ns/ext/worker#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 @prefix conv:  <http://gareus.org/oss/lv2/@LV2NAME@#>.
 
@@ -62,6 +63,11 @@ conv:Mono
 		lv2:index 2;
 		lv2:symbol "in";
 		lv2:name "In"
+	];
+    state:state [
+		<http://gareus.org/oss/lv2/zeroconvolv#ir> <ir/arundel_impulse_response_44_1kHz.flac>;
+		<http://gareus.org/oss/lv2/zeroconvolv#predelay> "0"^^xsd:int;
+		<http://gareus.org/oss/lv2/zeroconvolv#artificial_latency> "0"^^xsd:int;
 	];
 	.
 
@@ -242,6 +248,12 @@ conv:CfgMono
 		lv2:index 8;
 		lv2:symbol "in";
 		lv2:name "In"
+	];
+    state:state [
+		<http://gareus.org/oss/lv2/zeroconvolv#ir> <ir/arundel_impulse_response_44_1kHz.flac>;
+		<http://gareus.org/oss/lv2/zeroconvolv#predelay> "0"^^xsd:int;
+		<http://gareus.org/oss/lv2/zeroconvolv#artificial_latency> "0"^^xsd:int;
+        <http://gareus.org/oss/lv2/zeroconvolv#gain> "0.107950"^^xsd:float ;
 	];
 	.
 
