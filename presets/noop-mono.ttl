@@ -1,6 +1,6 @@
 zcpset:noopMono
 	a pset:Preset;
-	lv2:appliesTo <http://gareus.org/oss/lv2/@LV2NAME@#Mono>;
+	lv2:appliesTo <http://gareus.org/oss/lv2/@LV2NAME@#CfgMono>;
 
 	rdfs:label "No-OP Mono";
 	rdfs:comment "A No-OP 1in, 1out test impulse response: delta-spike followed by 63 zeroes";
