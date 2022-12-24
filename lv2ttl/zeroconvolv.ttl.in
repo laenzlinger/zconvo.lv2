@@ -64,7 +64,7 @@ conv:Mono
 		lv2:symbol "in";
 		lv2:name "In"
 	];
-    state:state [
+        state:state [
 		<http://gareus.org/oss/lv2/zeroconvolv#ir> <ir/arundel_impulse_response_44_1kHz.flac>;
 		<http://gareus.org/oss/lv2/zeroconvolv#predelay> "0"^^xsd:int;
 		<http://gareus.org/oss/lv2/zeroconvolv#artificial_latency> "0"^^xsd:int;
@@ -249,11 +249,11 @@ conv:CfgMono
 		lv2:symbol "in";
 		lv2:name "In"
 	];
-    state:state [
-		<http://gareus.org/oss/lv2/zeroconvolv#ir> <ir/arundel_impulse_response_44_1kHz.flac>;
+        state:state [
+		<http://gareus.org/oss/lv2/zeroconvolv#ir> <ir/delta-48k.wav>;
 		<http://gareus.org/oss/lv2/zeroconvolv#predelay> "0"^^xsd:int;
 		<http://gareus.org/oss/lv2/zeroconvolv#artificial_latency> "0"^^xsd:int;
-        <http://gareus.org/oss/lv2/zeroconvolv#gain> "0.107950"^^xsd:float ;
+		<http://gareus.org/oss/lv2/zeroconvolv#gain> "1"^^xsd:float ;
 	];
 	.
 
